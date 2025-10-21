@@ -1,6 +1,6 @@
 # Projeto: Mini-Aplicativo de Segmentação de Imagem
 
-Este projeto é um aplicativo de linha de comando (CLI) em Python capaz de carregar uma imagem e aplicar dois algoritmos simples de segmentação de imagem: Thresholding em HSV e Agrupamento K-Means.
+Este projeto é um aplicativo de linha de comando (CLI) em Python capaz de carregar uma imagem e aplicar dois algoritmos simples de segmentação de imagem: Por Cor em HSV e Agrupamento K-Means.
 
 ## Instalação
 
@@ -20,18 +20,18 @@ Este projeto é um aplicativo de linha de comando (CLI) em Python capaz de carre
 
 ## Como Rodar
 
-O script principal é o `segment.py`. Use a flag `--input` para definir a imagem, `--method` para o algoritmo e `--target` para a cor.
+O script principal é o `segment.py`. Use a flag `--input` para definir a imagem, `--method` para o algoritmo e `--target` para a cor. 
+No KMEANS usar após o `--method`: `--k` e colocar o número de separações de cores que o método deve fazer
 
 ### Exemplos de Uso
-
-**Segmentação por Cor (HSV)**
-
 ```bash
-# Usando os ranges padrão para "verde" na imagem planta1.jpg
-python segment.py --input samples/planta1.jpg --method hsv --target green
+# Usando o método HSV com ranges padrão para "verde"e "azul" nas imagens
+python segment.py --input samples/plantaRoxa.webp --method hsv --target blue
+python segment.py --input samples/PlantasTeste/plantaVermelha.jpg --method hsv --target green #unica imagem jpg
 
-# Usando os ranges padrão para "azul" e salvando os resultados
-python segment.py --input samples/placa.png --method hsv --target blue
+#Usando método KMENS nas imagens
+python segment.py --input samples/PlantasTeste/girassol.webp --method kmeans --k 4 --target green
+python segment.py --input samples/PlantasTeste/plantaAzul.webp --method kmeans --k 4 --target blue
 
 # Ajustando manualmente os ranges HSV para "azul"
-python segment.py --input samples/placa.png --method hsv --target blue --hmin 90 --hmax 130 --smin 100 --smax 255
+python segment.py --input samples/plantaRoxa.webp --method hsv --target blue --hmin 90 --hmax 130 --smin 100 --smax 255
