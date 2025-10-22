@@ -34,23 +34,20 @@ def capturar_webcam():
         if cv2.getWindowProperty("Preview - Aperte ESPAÇO para Capturar", cv2.WND_PROP_VISIBLE) < 1:
             break
 
-    # "Solta o laço" (libera a câmera) e fecha as janelas
     cap.release()
-    cv2.destroyAllWindows()
+    cv2.destroyAllWindows()  # libera a câmera e fecha as janelas
     
-    # Devolve a imagem "batida"
-    return frame
+    return frame  # devolve a imagem capturada
 
 def save_results(image, mask, base_name):
     """ Salva a máscara e o overlay na pasta 'outputs'. """
-    #garante que a pasta 'outputs' exista
-    os.makedirs('outputs', exist_ok=True)
+    os.makedirs('outputs', exist_ok=True) #garante que a pasta 'outputs' exista
     
     mask_path = os.path.join('outputs', f"{base_name}_mask.png")
     overlay_path = os.path.join('outputs', f"{base_name}_overlay.png")
 
     color_mask = np.zeros_like(image)
-    color_mask[mask == 255] = [0, 255, 0] # Pinta de verde, mude se quiser
+    color_mask[mask == 255] = [0, 255, 0] # pinta de verde
 
     overlay = cv2.addWeighted(image, 1.0, color_mask, 0.4, 0)
 
