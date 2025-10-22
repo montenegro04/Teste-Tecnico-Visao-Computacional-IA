@@ -4,9 +4,9 @@ Este projeto é um aplicativo de linha de comando (CLI) em Python capaz de carre
 
 ## Instalação
 
-1.  Clone este repositório (ou baixe o ZIP).
+1.  Clone este repositório
 2.  Certifique-se de ter o Python 3.9 ou superior.
-3.  (Recomendado) Crie e ative um ambiente virtual:
+3.  Crie e ative um ambiente virtual:
     ```bash
     python -m venv .venv
     source .venv/bin/activate  # (Linux/Mac)
@@ -21,12 +21,12 @@ Este projeto é um aplicativo de linha de comando (CLI) em Python capaz de carre
 ## Como Rodar
 
 O script principal é o `segment.py`. Use a flag `--input` para definir a imagem, `--method` para o algoritmo e `--target` para a cor. 
-No KMEANS usar após o `--method`: `--k` e colocar o número de separações de cores que o método deve fazer
+No KMEANS usar após o `--method`: `--k` colocando o número de separações de cores que o método deve fazer
 
 ### Exemplos de Uso
 ```bash
 # Usando o método HSV com ranges padrão para "verde"e "azul" nas imagens
-python segment.py --input samples/plantaRoxa.webp --method hsv --target blue
+python segment.py --input samples/PlantasTeste/plantaRoxa.webp --method hsv --target blue
 python segment.py --input samples/PlantasTeste/plantaVermelha.jpg --method hsv --target green #unica imagem jpg
 
 #Usando método KMENS nas imagens
@@ -34,4 +34,4 @@ python segment.py --input samples/PlantasTeste/girassol.webp --method kmeans --k
 python segment.py --input samples/PlantasTeste/plantaAzul.webp --method kmeans --k 4 --target blue
 
 # Ajustando manualmente os ranges HSV para "azul"
-python segment.py --input samples/plantaRoxa.webp --method hsv --target blue --hmin 90 --hmax 130 --smin 100 --smax 255
+python segment.py --input samples/PlantasTeste/plantaRoxa.webp --method hsv --target blue --hmin 90 --hmax 130 --smin 100 --smax 255
