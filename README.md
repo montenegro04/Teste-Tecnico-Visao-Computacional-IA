@@ -46,38 +46,38 @@ python segment.py --webcam --method hsv --target blue
 Este projeto implementa duas abordagens de segmentação baseadas em paradigmas distintos:
 
 ### 1. Segmentação por Cor (HSV)
-    Este método é uma abordagem direta por limiarização (Thresholding).
+Este método é uma abordagem direta por limiarização (Thresholding).
 
-    A imagem original é convertida do espaço de cor BGR (padrão do OpenCV) para o HSV (Hue, Saturation, Value). O espaço HSV é preferível para segmentação de cores, pois desacopla a informação de cor pura (H - Matiz) da intensidade da cor (S - Saturação) e do brilho (V - Valor).
+A imagem original é convertida do espaço de cor BGR (padrão do OpenCV) para o HSV (Hue, Saturation, Value). O espaço HSV é preferível para segmentação de cores, pois desacopla a informação de cor pura (H - Matiz) da intensidade da cor (S - Saturação) e do brilho (V - Valor).
 
-    Isso confere robustez a variações de iluminação; mesmo sob sombras (baixo V) ou reflexos especulares (baixo S), o componente H (Matiz) tende a permanecer relativamente estável.
+Isso confere robustez a variações de iluminação; mesmo sob sombras (baixo V) ou reflexos especulares (baixo S), o componente H (Matiz) tende a permanecer relativamente estável.
 
-    O método, então, aplica um filtro de limiar. Qualquer pixel cujos valores H, S e V estejam contidos dentro do range especificado (seja pelos valores padrão ou pelos parâmetros da CLI, como --hmin, --smax, etc.) é selecionado e compõe a máscara de segmentação final.
+O método, então, aplica um filtro de limiar. Qualquer pixel cujos valores H, S e V estejam contidos dentro do range especificado (seja pelos valores padrão ou pelos parâmetros da CLI, como --hmin, --smax, etc.) é selecionado e compõe a máscara de segmentação final.
 
 ### 2. Segmentação por K-Means (Agrupamento)
-    Este método é uma abordagem "não-supervisionada" de Agrupamento (Clustering).
+ Este método é uma abordagem "não-supervisionada" de Agrupamento (Clustering).
 
-    O algoritmo K-Means não possui conhecimento prévio sobre "azul" ou "verde". Sua função é analisar todos os pixels da imagem e agrupá-los automaticamente em K clusters (definidos pelo usuário via flag --k), com base na similaridade de suas cores no espaço BGR.
+ O algoritmo K-Means não possui conhecimento prévio sobre "azul" ou "verde". Sua função é analisar todos os pixels da imagem e agrupá-los automaticamente em K clusters (definidos pelo usuário via flag --k), com base na similaridade de suas cores no espaço BGR.
 
-    O K-Means identifica os K centróides (as "cores médias") que melhor representam a distribuição de cores da imagem.
+ O K-Means identifica os K centróides (as "cores médias") que melhor representam a distribuição de cores da imagem.
 
-    O script, então, analisa esses K centróides e calcula qual deles está matematicamente mais próximo da cor-alvo "pura" especificada pelo usuário no --target (ex: qual centróide tem a menor distância Euclidiana até o BGR "azul puro" [255, 0, 0]).
+ O script, então, analisa esses K centróides e calcula qual deles está matematicamente mais próximo da cor-alvo "pura" especificada pelo usuário no --target (ex: qual centróide tem a menor distância Euclidiana até o BGR "azul puro" [255, 0, 0]).
 
-    A máscara final é gerada selecionando todos os pixels que o algoritmo K-Means atribuiu a esse cluster "vencedor".
+ A máscara final é gerada selecionando todos os pixels que o algoritmo K-Means atribuiu a esse cluster "vencedor".
 
 ## Observações sobre a Escolha de Ranges HSV
-    A seleção de um range HSV eficaz é um processo iterativo.
+ A seleção de um range HSV eficaz é um processo iterativo.
 
-    * **Utilize Ferramentas Auxiliares:** É altamente recomendável usar um "Color Picker" (seletor de cores) que opere em HSV (disponível em softwares como GIMP, Photoshop, ou em ferramentas online). Use-o para extrair os valores H, S e V do pixel-alvo em sua imagem de amostra. Isso fornecerá um ponto de partida para o seu range.
+* **Utilize Ferramentas Auxiliares:** É altamente recomendável usar um "Color Picker" (seletor de cores) que opere em HSV (disponível em softwares como GIMP, Photoshop, ou em ferramentas online). Use-o para extrair os valores H, S e V do pixel-alvo em sua imagem de amostra. Isso fornecerá um ponto de partida para o seu range.
 
-   * ** O Componente H (Matiz) é Primário:** O H (0-179 no OpenCV) define a cor. O primeiro passo é estabelecer um range para ele (ex: Verde situa-se aproximadamente entre 40-80, Azul entre 90-130).
+* ** O Componente H (Matiz) é Primário:** O H (0-179 no OpenCV) define a cor. O primeiro passo é estabelecer um range para ele (ex: Verde situa-se aproximadamente entre 40-80, Azul entre 90-130).
 
-    * **Filtrando Ruído com S e V Mínimos:**
-        * S (Saturação) define a "pureza" da cor (0 = escala de cinza, 255 = cor pura).
+* **Filtrando Ruído com S e V Mínimos:**
+* S (Saturação) define a "pureza" da cor (0 = escala de cinza, 255 = cor pura).
 
-        * V (Valor) define o brilho da cor (0 = preto, 255 = brilho máximo).
+* V (Valor) define o brilho da cor (0 = preto, 255 = brilho máximo).
 
-    * **Estratégia de Refinamento:** Para eliminar ruídos comuns, como fundos brancos, cinzas ou superexpostos (reflexos), aumente o limiar --smin (Saturação Mínima) (ex: --smin 50). Para eliminar sombras profundas ou pixels pretos, aumente o limiar --vmin (Valor Mínimo) (ex: --vmin 50). Ajustar os valores mínimos de S e V é a forma mais eficaz de isolar a cor-alvo e limpar a máscara de segmentação.
+* **Estratégia de Refinamento:** Para eliminar ruídos comuns, como fundos brancos, cinzas ou superexpostos (reflexos), aumente o limiar --smin (Saturação Mínima) (ex: --smin 50). Para eliminar sombras profundas ou pixels pretos, aumente o limiar --vmin (Valor Mínimo) (ex: --vmin 50). Ajustar os valores mínimos de S e V é a forma mais eficaz de isolar a cor-alvo e limpar a máscara de segmentação.
 
 ## Limitações Conhecidas
 
@@ -88,9 +88,9 @@ Este método é rápido, mas muito sensível às condições de iluminação e a
 
 * **Sensibilidade à Iluminação:** Embora o espaço HSV seja mais robusto a variações de iluminação que o RGB, ele não é imune:
 
-    * **Sombras:** Áreas de sombra intensa reduzem drasticamente o componente V (Brilho) de um pixel. Um objeto verde, por exemplo, pode ficar abaixo do limiar vmin (Valor Mínimo) e não ser segmentado.
+* **Sombras:** Áreas de sombra intensa reduzem drasticamente o componente V (Brilho) de um pixel. Um objeto verde, por exemplo, pode ficar abaixo do limiar vmin (Valor Mínimo) e não ser segmentado.
 
-    * **Reflexos (Luz Estourada):** Luz direta ou reflexos especulares "lavam" a cor, reduzindo o componente S (Saturação) para próximo de zero. Este pixel "superexposto" ficará abaixo do limiar smin (Saturação Mínima) e também falhará na segmentação.
+* **Reflexos (Luz Estourada):** Luz direta ou reflexos especulares "lavam" a cor, reduzindo o componente S (Saturação) para próximo de zero. Este pixel "superexposto" ficará abaixo do limiar smin (Saturação Mínima) e também falhará na segmentação.
 
 * **Valores Padrão:** Os ranges de cor padrão (default) para green e blue são apenas estimativas básicas. Na prática, quase sempre será necessário ajustar manualmente os limiares (usando as flags --hmin, --hmax, etc.) para adequar a segmentação às imagens específicas.
 
@@ -103,9 +103,9 @@ Este método é mais adaptativo, mas é computacionalmente mais lento e menos di
 
 * **Dependência do Parâmetro K:** O sucesso do método depende de uma boa estimativa do número K de clusters (grupos) pelo usuário:
 
-    *Se K for muito baixo (ex: K=2 em uma cena complexa), o algoritmo pode agrupar cores distintas (ex: azul e verde) no mesmo cluster, invalidando a segmentação.
+*Se K for muito baixo (ex: K=2 em uma cena complexa), o algoritmo pode agrupar cores distintas (ex: azul e verde) no mesmo cluster, invalidando a segmentação.
     
-    *Se K for muito alto, ele pode dividir cores semelhantes (ex: "verde-claro" e "verde-escuro") em clusters separados, resultando em uma segmentação incompleta.
+*Se K for muito alto, ele pode dividir cores semelhantes (ex: "verde-claro" e "verde-escuro") em clusters separados, resultando em uma segmentação incompleta.
 
 * **Seleção do Cluster-Alvo:** A lógica para selecionar o cluster correto (comparando a cor média do centróide com uma cor "pura" como [0, 255, 0]) é simplista. Se o "verde" real da imagem for um tom escuro (ex: verde-musgo), ele pode estar matematicamente mais distante do "verde-puro" do que um cluster de "fundo-branco-sujo", levando o script a selecionar o cluster errado.
 
