@@ -36,13 +36,30 @@ def config_argument_cli():
        
         if args.smin is not None and (args.smin < 0 or args.smin > 255):
             parser.error("--smin deve estar entre 0 e 255")
-        if args.smax is not None and (args.smax < 0 or args.smax > 179):
-            parser.error("--smax deve estar entre 0 e 179.")
+        if args.smax is not None and (args.smax < 0 or args.smax > 255):
+            parser.error("--smax deve estar entre 0 e 255.")
 
         if args.vmin is not None and (args.vmin < 0 or args.vmin > 255):
             parser.error("--vmin deve estar entre 0 e 255.")
         if args.vmax is not None and (args.vmax < 0 or args.vmax > 255):
             parser.error("--vmax deve estar entre 0 e 255.")
+    
+        if args.hmin is not None and args.hmax is not None:
+                if args.hmin > args.hmax:
+                    parser.error("--hmin não pode ser MAIOR que o --hmax.")
+            
+        if args.smin is not None and args.smax is not None:
+                if args.smin > args.smax:
+                    parser.error(" --smin não pode ser MAIOR que o --smax.")
+
+        if args.vmin is not None and args.vmax is not None:
+                if args.vmin > args.vmax:
+                    parser.error("--vmin não pode ser MAIOR que o --vmax.")
+
+    if args.method == 'kmeans':
+        if args.k <= 0:
+            parser.error("--k tem que ser no mínimo 1!")
+
     return args
 
 def main(args):
