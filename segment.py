@@ -1,18 +1,19 @@
 import cv2
 import argparse
-import os
 import time
+import os
 
-from algoritmos import segment_hsv, segment_kmeans
-from utils import save_results, capturar_webcam
+from segmentation.hsv_segmenter import segment_hsv
+from segmentation.kmeans_segmenter import segment_kmeans
+from utils.save_results import save_results
+from utils.capture_webcam import capture_webcam
 
-def configurar_argumentos_cli():
+def config_argument_cli():
     parser = argparse.ArgumentParser(description="Mini-aplicativo de segmentação de imagem (HSV e K-Means)")
     
-    grupo_entrada = parser.add_mutually_exclusive_group(required=True)
-    grupo_entrada.add_argument("--input", type=str, help="Caminho para a imagem de entrada.")
-    grupo_entrada.add_argument("--webcam", action='store_true', help="Captura a imagem da webcam.")    
-    # action=store_true faz o args.webcam virar True se a flag for usada.
+    grup_input = parser.add_mutually_exclusive_group(required=True)
+    grup_input.add_argument("--input", type=str, help="Caminho para a imagem de entrada.")
+    grup_input.add_argument("--webcam", action='store_true', help="Captura a imagem da webcam.")    
 
     parser.add_argument("--method", type=str, required=True, choices=['hsv', 'kmeans'], help="Método de segmentação.")
     parser.add_argument("--target", type=str, required=True, choices=['green', 'blue'], help="Cor alvo para a segmentação.")
@@ -26,15 +27,21 @@ def configurar_argumentos_cli():
     parser.add_argument("--vmax", type=int, help="Valor MÁXIMO de Value [0-255]")
 
     args = parser.parse_args()
+
+    if args.method == 'hsv':
+        if args.hmin is not None and (args.hmin < 0 or args.hmin > 179):
+            parser.error("--hmin deve estar entre 0 e 179")
+        if args.smin is not None and (args.smin < 0 or args.smin > 255):
+            parser.error("--smin deve estar entre 0 e 255")
     return args
 
 def main(args):
-    start_time = time.time() #coleta o tempo real
+    start_time = time.time() 
     
     if args.input:
         image = cv2.imread(args.input)
     elif args.webcam:
-        image = capturar_webcam()
+        image = capture_webcam()
     
     if image is None:
         if args.input:
@@ -43,7 +50,6 @@ def main(args):
             print("Captura da webcam cancelada ou falhou.")
         return
 
-    #roda o método escolhido
     if args.method == 'hsv':
         mask = segment_hsv(image, args)
     elif args.method == 'kmeans':
@@ -52,18 +58,17 @@ def main(args):
         print(f"Erro: Método '{args.method}' desconhecido.")
         return
 
-    #salva os resultados
     if args.input:
         base_name = os.path.splitext(os.path.basename(args.input))[0]
     else:
         base_name = f"webcam_captura_{int(time.time())}"
 
     base_name += f"_{args.method}_{args.target}"
-    save_results(image, mask, base_name)
+    save_results(image, mask, base_name, args.target)
     
-    end_time = time.time() #encerra o tempo
+    end_time = time.time()
     total_pixels = image.shape[0] * image.shape[1]
-    segmented_pixels = cv2.countNonZero(mask) #diz quantos pixels ñ são zeros na mascara
+    segmented_pixels = cv2.countNonZero(mask)    #diz quantos pixels ñ são zeros na mascara
     percent = (segmented_pixels / total_pixels) * 100
     
     print("-" * 30)
@@ -73,5 +78,5 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = configurar_argumentos_cli() 
+    args = config_argument_cli() 
     main(args)

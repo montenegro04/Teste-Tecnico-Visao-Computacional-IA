@@ -6,14 +6,15 @@ Este projeto é um aplicativo de linha de comando (CLI) em Python capaz de carre
 
 1.  Clone este repositório
 2.  Certifique-se de ter o Python 3.9 ou superior.
-3.  Crie e ative um ambiente virtual:
+3.  Certifique-se de ter uma linha de comando, powershell ou SMD.
+4.  Crie e ative um ambiente virtual:
     ```bash
     python -m venv .venv
     source .venv/bin/activate  # (Linux/Mac)
     # ou
     .\.venv\Scripts\activate   # (Windows)
     ```
-4.  Instale as dependências necessárias:
+5.  Instale as dependências necessárias:
     ```bash
     pip install -r requirements.txt
     ```
@@ -36,6 +37,6 @@ python segment.py --input samples/PlantasTeste/plantaAzul.webp --method kmeans -
 # Ajustando manualmente os ranges HSV para "azul"
 python segment.py --input samples/PlantasTeste/plantaRoxa.webp --method hsv --target blue --hmin 90 --hmax 130 --smin 100 --smax 255
 
-#Usando a captura por webcam por qualquer um dos métodos e cores "azul"  ou "verde"
+#Usando a captura por webcam por qualquer um dos métodos e cores na cor "verde"
 python segment.py --webcam --method kmeans --k 4 --target green
-python segment.py --webcam --method hsv --target blue
+python segment.py --webcam --method hsv --target green
