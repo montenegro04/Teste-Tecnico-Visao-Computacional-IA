@@ -19,20 +19,30 @@ def config_argument_cli():
     parser.add_argument("--target", type=str, required=True, choices=['green', 'blue'], help="Cor alvo para a segmentação.")
     parser.add_argument("--k", type=int, default=3, help="Número de clusters (K) para o K-Means.")
     
-    parser.add_argument("--hmin", type=int, help="Valor MÍNIMO de Hue [0-179]")
-    parser.add_argument("--hmax", type=int, help="Valor MÁXIMO de Hue [0-179]")
-    parser.add_argument("--smin", type=int, help="Valor MÍNIMO de Saturation [0-255]")
-    parser.add_argument("--smax", type=int, help="Valor MÁXIMO de Saturation [0-255]")
-    parser.add_argument("--vmin", type=int, help="Valor MÍNIMO de Value [0-255]")
-    parser.add_argument("--vmax", type=int, help="Valor MÁXIMO de Value [0-255]")
+    parser.add_argument("--hmin", type=int, help="Valor MÍNIMO de Matiz [0-179]")
+    parser.add_argument("--hmax", type=int, help="Valor MÁXIMO de Matiz [0-179]")
+    parser.add_argument("--smin", type=int, help="Valor MÍNIMO de Saturação [0-255]")
+    parser.add_argument("--smax", type=int, help="Valor MÁXIMO de Saturação [0-255]")
+    parser.add_argument("--vmin", type=int, help="Valor MÍNIMO de Brilho [0-255]")
+    parser.add_argument("--vmax", type=int, help="Valor MÁXIMO de Brilho [0-255]")
 
     args = parser.parse_args()
 
     if args.method == 'hsv':
         if args.hmin is not None and (args.hmin < 0 or args.hmin > 179):
             parser.error("--hmin deve estar entre 0 e 179")
+        if args.hmax is not None and (args.hmax < 0 or args.hmax > 179):
+            parser.error(" --hmax deve estar entre 0 e 179.")
+       
         if args.smin is not None and (args.smin < 0 or args.smin > 255):
             parser.error("--smin deve estar entre 0 e 255")
+        if args.smax is not None and (args.smax < 0 or args.smax > 179):
+            parser.error("--smax deve estar entre 0 e 179.")
+
+        if args.vmin is not None and (args.vmin < 0 or args.vmin > 255):
+            parser.error("--vmin deve estar entre 0 e 255.")
+        if args.vmax is not None and (args.vmax < 0 or args.vmax > 255):
+            parser.error("--vmax deve estar entre 0 e 255.")
     return args
 
 def main(args):

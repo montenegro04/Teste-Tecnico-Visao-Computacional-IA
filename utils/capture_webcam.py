@@ -19,17 +19,24 @@ def capture_webcam():
             print("Erro ao ler o frame da câmera.")
             break
             
-        frame_preview = cv2.flip(frame_preview, 1)  # dá um espelho" na imagem (flipa), senão fica ao contrário
+        frame_preview = cv2.flip(frame_preview, 1)  # dá um espelho" na imagem, senão fica ao contrário
 
         cv2.imshow("Preview - Aperte ESPAÇO para Capturar", frame_preview) 
 
         key = cv2.waitKey(1) & 0xFF  
 
-        if key == 32: #se a tecla for ESPAÇO (ASCII código 32)
-            print("Foto batida!")
-            frame = frame_preview  
-            break
-        
+        if key != 255: 
+            if key == 32: #se a tecla for ESPAÇO (ASCII código 32)
+                print("Foto batida!")
+                frame = frame_preview  
+                break
+            else:
+                try:
+                    key_pressed = chr(key)
+                except:
+                    key_pressed = "desconhecida"
+                print(f"Tecla '{key_pressed}' apertada, fechando o programa")
+                break 
         if cv2.getWindowProperty("Preview - Aperte ESPAÇO para Capturar", cv2.WND_PROP_VISIBLE) < 1:
             break
 
